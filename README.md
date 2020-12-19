@@ -61,8 +61,7 @@ For more detailed information on how `haste` can be used, use `haste --help` or 
 
 ## Installation
 
-Navigate to the latest [release]() and download the client for your OS and architecture.
-<!-- TODO: add link to releases -->
+Navigate to the latest [release](https://github.com/jagoe/haste-client-go/releases) and download the client for your OS and architecture.
 
 ## Build
 
