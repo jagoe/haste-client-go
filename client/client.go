@@ -6,13 +6,23 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"regexp"
 
 	"github.com/jagoe/haste-client-go/config"
 	"github.com/jagoe/haste-client-go/server"
 )
 
 // Get retrieves a haste from the server and prints it to STDOUT or into a file
-func Get(key string, config *config.GetConfig) {
+func Get(keyOrURL string, config *config.GetConfig) {
+	serverURL, key := parseHasteURL(keyOrURL)
+	if serverURL == "" || key == "" {
+		// default to configured server and use the provided key
+		key = keyOrURL
+	} else {
+		// override the configured server
+		config.HasteConfig.Server = serverURL
+	}
+
 	haste, err := server.Get(key, config)
 	if err != nil {
 		log.Fatal(err)
@@ -46,4 +56,16 @@ func Create(filepath string, config *config.CreateConfig) {
 	}
 
 	fmt.Printf("%s/%s", config.HasteConfig.Server, key)
+}
+
+func parseHasteURL(possibleURL string) (string, string) {
+	r := regexp.MustCompile(`(.*?//.*?)/(.*?)$`)
+	match := r.FindStringSubmatch(possibleURL)
+
+	if len(match) < 3 {
+		// no match
+		return "", ""
+	}
+
+	return match[1], match[2]
 }
