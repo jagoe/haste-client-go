@@ -29,7 +29,7 @@ cat file | haste
 Provided with a file argument, `haste` will create a haste from the contents of that file:
 
 ```bash
-haste -f file # equivalent to cat file | haste
+haste file # equivalent to cat file | haste
 ```
 
 #### Output
@@ -37,9 +37,9 @@ haste -f file # equivalent to cat file | haste
 When creating hastes, the following outputs will be printed to STDOUT:
 
 ```bash
-haste -f file # URL of the haste, e.g. http://hastebin.com/ahuwabaqij
-haste -f file -o key # Key of the haste, e.g. ahuwabaqij
-haste -f file -o json # Key of the haste in JSON format, e.g. {"key": "ahuwabaqij"}
+haste ./file # URL of the haste, e.g. http://hastebin.com/ahuwabaqij
+haste ./file -o key # Key of the haste, e.g. ahuwabaqij
+haste ./file -o json # Key of the haste in JSON format, e.g. {"key": "ahuwabaqij"}
 ```
 
 ### Reading a haste

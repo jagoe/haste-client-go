@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/jagoe/haste-client-go/config"
 	"github.com/jagoe/haste-client-go/server"
@@ -26,8 +27,20 @@ func Get(key string, config *config.GetConfig) {
 }
 
 // Create a new haste on the server and print an identifier to STDOUT
-func Create(content io.Reader, config *config.CreateConfig) {
-	key, err := server.Create(content, config)
+func Create(filepath string, config *config.CreateConfig) {
+	var input io.Reader
+	if filepath != "" {
+		file, err := os.Open(filepath)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		input = file
+	} else {
+		input = os.Stdin
+	}
+
+	key, err := server.Create(input, config)
 	if err != nil {
 		log.Fatal(err)
 	}
