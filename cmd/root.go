@@ -6,6 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/jagoe/haste-client-go/client"
+	"github.com/jagoe/haste-client-go/config"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
@@ -17,10 +19,14 @@ var rootCmd = &cobra.Command{
 	Use:   "haste",
 	Short: "A hastebin client, written in Go",
 	Long:  `A hastebin client that can create hastes from files and STDIN and read hastes from a configurable server.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// TODO: call client.Create
-	//	Run: func(cmd *cobra.Command, args []string) { },
+	Example: `echo Test | haste
+cat ./file | haste`,
+	Run: func(cmd *cobra.Command, args []string) {
+		config := config.CreateConfig{}
+		viper.Unmarshal(&config)
+
+		client.Create(os.Stdin, &config)
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

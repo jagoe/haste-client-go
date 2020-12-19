@@ -14,7 +14,7 @@ func (config *HasteConfig) CanProvideClientCertificate() bool {
 
 // GetConfig represents the configuration values provided bt a config YAML, ENV or flags for the get command
 type GetConfig struct {
-	HasteConfig `mapstructure:",squash"`
+	HasteConfig HasteConfig `mapstructure:",squash"`
 	OutputPath  string
 }
 
@@ -23,7 +23,7 @@ func (config *GetConfig) ShouldSaveAsFile() bool {
 	return len(config.OutputPath) > 0
 }
 
-// WriteConfig represents the configuration values provided bt a config YAML, ENV or flags for creating a haste
-type WriteConfig struct {
-	HasteConfig `mapstructure:",squash"`
+// CreateConfig represents the configuration values provided bt a config YAML, ENV or flags for creating a haste
+type CreateConfig struct {
+	HasteConfig HasteConfig `mapstructure:",squash"`
 }

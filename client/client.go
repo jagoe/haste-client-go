@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 
@@ -22,4 +23,14 @@ func Get(key string, config *config.GetConfig) {
 	}
 
 	ioutil.WriteFile(config.OutputPath, []byte(haste), 0770)
+}
+
+// Create a new haste on the server and print an identifier to STDOUT
+func Create(content io.Reader, config *config.CreateConfig) {
+	key, err := server.Create(content, config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%s/%s", config.HasteConfig.Server, key)
 }
