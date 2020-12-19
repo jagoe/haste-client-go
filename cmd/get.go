@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/jagoe/haste-client-go/client"
+	"github.com/jagoe/haste-client-go/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -16,7 +17,7 @@ a hastebin server by providing the complete URL (protocol required!).`,
 haste get http://pastebin.com/oyivuxonema`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		config := client.GetConfig{}
+		config := config.GetConfig{}
 		viper.Unmarshal(&config)
 
 		out := cmd.Flag("out")
