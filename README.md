@@ -84,4 +84,4 @@ Jakob Göbel (goebel.jakob@gmail.com)
 
 ## License
 
-[MIT License](./LICENSE.MD)
+[MIT License](./LICENSE)
