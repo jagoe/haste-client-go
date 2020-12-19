@@ -11,7 +11,7 @@ import (
 var getCmd = &cobra.Command{
 	Use:   "get [haste key or URL]",
 	Short: "Get a haste from the server",
-	Long: `Get a haste from the configured server (http://hastebin.com by default) by providing a key or directly from
+	Long: `Get a haste from the configured server (https://hastebin.com by default) by providing a key or directly from
 a hastebin server by providing the complete URL (protocol required!).`,
 	Example: `haste get oyivuxonema
 haste get http://pastebin.com/oyivuxonema`,

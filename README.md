@@ -26,20 +26,11 @@ Without any arguments, `haste` reads from the STDIN:
 cat file | haste
 ```
 
-Provided with a file argument, `haste` will create a haste from the contents of that file:
+Provided with a file argument, `haste` will create a haste from the contents of that file and return the URL pointing to it:
 
 ```bash
-haste file # equivalent to cat file | haste
-```
-
-#### Output
-
-When creating hastes, the following outputs will be printed to STDOUT:
-
-```bash
-haste ./file # URL of the haste, e.g. http://hastebin.com/ahuwabaqij
-haste ./file -o key # Key of the haste, e.g. ahuwabaqij
-haste ./file -o json # Key of the haste in JSON format, e.g. {"key": "ahuwabaqij"}
+url=$(haste file) # equivalent to cat file | haste
+echo $url # e.g. https://hastebin.com/ogoquyocaq
 ```
 
 ### Reading a haste

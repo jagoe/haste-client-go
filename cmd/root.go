@@ -44,14 +44,12 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "Config file [$HOME/.haste-client-go.yaml]")
-	rootCmd.PersistentFlags().StringP("server", "s", "http://hastebin.com", "Server URL")
+	rootCmd.PersistentFlags().StringP("server", "s", "https://hastebin.com", "Server URL")
 	rootCmd.PersistentFlags().String("client-cert", "", "Client certificate path")
 	rootCmd.PersistentFlags().String("client-cert-key", "", "Client certificate key path")
 	viper.BindPFlag("server", rootCmd.PersistentFlags().Lookup("server"))
 	viper.BindPFlag("clientCert", rootCmd.PersistentFlags().Lookup("client-cert"))
 	viper.BindPFlag("clientCertKey", rootCmd.PersistentFlags().Lookup("client-cert-key"))
-
-	// TODO: add -o/--output
 }
 
 // initConfig reads in config file and ENV variables if set.
