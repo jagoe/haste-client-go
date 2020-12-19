@@ -48,7 +48,7 @@ haste -f file -o json # Key of the haste in JSON format, e.g. {"key": "ahuwabaqi
 
 ```bash
 haste get <key> # prints the haste contents to STDOUT
-haste get <key> -f ./file # prints the haste contents to ./file
+haste get <key> -o ./file # prints the haste contents to ./file
 ```
 
 ### Help

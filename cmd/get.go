@@ -8,13 +8,21 @@ import (
 
 // getCmd represents the get command
 var getCmd = &cobra.Command{
-	Use:   "get [haste key]",
+	Use:   "get [haste key or URL]",
 	Short: "Get a haste from the server",
-	Long:  `Get a haste from the server`,
-	Args:  cobra.ExactArgs(1),
+	Long: `Get a haste from the configured server (http://hastebin.com by default) by providing a key or directly from
+a hastebin server by providing the complete URL (protocol required!).`,
+	Example: `haste get oyivuxonema
+haste get http://pastebin.com/oyivuxonema`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		config := client.HasteConfig{}
+		config := client.GetConfig{}
 		viper.Unmarshal(&config)
+
+		out := cmd.Flag("out")
+		if out != nil {
+			config.OutputPath = out.Value.String()
+		}
 
 		client.Get(args[0], &config)
 	},
@@ -23,8 +31,5 @@ var getCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(getCmd)
 
-	// TODO: add --out/-o to write to file
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// getCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	getCmd.Flags().StringP("out", "o", "", "File path to save the haste")
 }
