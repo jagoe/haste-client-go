@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -26,7 +25,7 @@ var rootCmd = &cobra.Command{
 cat ./file | haste
 haste ./file`,
 	Run: func(cmd *cobra.Command, args []string) {
-		server := server.HasteServer{}
+		server := server.MakeHasteServer()
 		viper.Unmarshal(&server)
 
 		// TODO: extract to separate fn in client package
@@ -34,7 +33,8 @@ haste ./file`,
 		if args[0] != "" {
 			file, err := os.Open(args[0])
 			if err != nil {
-				log.Fatal(err)
+				os.Stderr.WriteString(err.Error())
+				os.Exit(1)
 			}
 
 			input = file
@@ -42,7 +42,11 @@ haste ./file`,
 			input = os.Stdin
 		}
 
-		client.Create(input, server, server.URL, os.Stdout)
+		err := client.Create(input, server, server.URL, os.Stdout)
+		if err != nil {
+			os.Stderr.WriteString(err.Error())
+			os.Exit(1)
+		}
 	},
 }
 
@@ -88,7 +92,7 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		os.Stderr.WriteString(fmt.Sprintf("Using config file: %s\n", viper.ConfigFileUsed()))
+	if err := viper.ReadInConfig(); err != nil {
+		// no config file, no problem
 	}
 }

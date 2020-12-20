@@ -50,7 +50,7 @@ func TestGet(t *testing.T) {
 		err := Get("anykey", FakeGetter{haste: expectedHaste}, buffer)
 
 		if err != nil {
-			t.Errorf("Expected Get not to return an error, got %e", err)
+			t.Errorf("Expected Get not to return an error, got %s", err.Error())
 		}
 
 		haste := buffer.String()
@@ -83,7 +83,7 @@ func TestCreate(t *testing.T) {
 		err := Create(bytes.NewBufferString(""), FakeCreator{hasteKey: hasteKey}, serverURL, buffer)
 
 		if err != nil {
-			t.Errorf("Expected Create not to return an error, got %e", err)
+			t.Errorf("Expected Create not to return an error, got %s", err.Error())
 		}
 
 		hasteURL := buffer.String()

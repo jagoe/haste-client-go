@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"log"
+	"os"
 
 	"github.com/jagoe/haste-client-go/client"
 	"github.com/jagoe/haste-client-go/server"
@@ -20,7 +20,7 @@ a hastebin server by providing the complete URL (protocol required!).`,
 haste get http://pastebin.com/oyivuxonema`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		server := server.HasteServer{}
+		server := server.MakeHasteServer()
 		viper.Unmarshal(&server)
 
 		var filepath string
@@ -32,7 +32,8 @@ haste get http://pastebin.com/oyivuxonema`,
 
 		output, err := client.SetupGetOutput(filepath, client.OsFileOpener{})
 		if err != nil {
-			log.Fatal(err)
+			os.Stderr.WriteString(err.Error())
+			os.Exit(1)
 		}
 
 		serverURL, key := util.ParseURL(args[0])
@@ -44,7 +45,11 @@ haste get http://pastebin.com/oyivuxonema`,
 			server.URL = serverURL
 		}
 
-		client.Get(key, server, output)
+		err = client.Get(key, server, output)
+		if err != nil {
+			os.Stderr.WriteString(err.Error())
+			os.Exit(1)
+		}
 	},
 }
 

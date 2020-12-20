@@ -31,9 +31,12 @@ type HasteServer struct {
 	KeyPairLoader X509KeyPairLoader
 }
 
-// Initialize configures the HasteServer instance for use in production and can be skipped for tests
-func (server HasteServer) Initialize() {
+// MakeHasteServer creates a new instance of HasteServer
+func MakeHasteServer() HasteServer {
+	server := HasteServer{}
 	server.KeyPairLoader = TLSX509KeyPairLoader{}
+
+	return server
 }
 
 // #endregion
@@ -56,8 +59,8 @@ func (server HasteServer) Get(key string, client *http.Client) (string, error) {
 		defer response.Body.Close()
 	}
 
-	if response.StatusCode == 404 {
-		return "", fmt.Errorf("No document found: %s", key)
+	if response.StatusCode >= 300 {
+		return "", fmt.Errorf("Error retrieving document %s: %s", key, response.Status)
 	}
 
 	body, err := ioutil.ReadAll(response.Body)

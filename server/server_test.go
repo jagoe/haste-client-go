@@ -70,20 +70,27 @@ func TestGet(t *testing.T) {
 		}
 	})
 
-	t.Run("should return an error if the GET request returns a 404 response", func(t *testing.T) {
-		key := "abcdef"
-		expectedError := fmt.Sprintf("No document found: %s", key)
-		server, endpoint := prepareTest(TestSettings{ResponseCode: 404})
-		defer endpoint.Close()
+	t.Run("should return an error if the GET request returns an error response", func(t *testing.T) {
+		tests := []struct {
+			message string
+			code    int
+		}{{message: "Bad Request", code: 400}, {message: "Not Found", code: 404}, {message: "Internal Server Error", code: 500}}
 
-		_, err := server.Get(key, endpoint.Client())
+		for _, test := range tests {
+			key := "abcdef"
+			expectedError := fmt.Sprintf("Error retrieving document %s: %d %s", key, test.code, test.message)
+			server, endpoint := prepareTest(TestSettings{ResponseCode: test.code})
+			defer endpoint.Close()
 
-		if err == nil {
-			t.Fatalf("Should have returned an error")
-		}
+			_, err := server.Get(key, endpoint.Client())
 
-		if err.Error() != expectedError {
-			t.Fatalf("Should have returned '%s' as error, got '%s'", expectedError, err.Error())
+			if err == nil {
+				t.Fatalf("Should have returned an error")
+			}
+
+			if err.Error() != expectedError {
+				t.Fatalf("Should have returned '%s' as error, got '%s'", expectedError, err.Error())
+			}
 		}
 	})
 
@@ -96,7 +103,7 @@ func TestGet(t *testing.T) {
 		response, err := server.Get(key, endpoint.Client())
 
 		if err != nil {
-			t.Fatalf("Should not have returned an error: %e", err)
+			t.Fatalf("Should not have returned an error: %s", err.Error())
 		}
 
 		returnedHaste := strings.Split(response, "|")[0]
@@ -148,7 +155,7 @@ func TestCreate(t *testing.T) {
 		returnedKey, err := server.Create(bytes.NewBufferString("content"), endpoint.Client())
 
 		if err != nil {
-			t.Fatalf("Should not have returned an error: %e", err)
+			t.Fatalf("Should not have returned an error: %s", err.Error())
 		}
 
 		if returnedKey != key {

@@ -24,7 +24,7 @@ func TestSetupGetOutput(t *testing.T) {
 		out, err := SetupGetOutput("", nil)
 
 		if err != nil {
-			t.Fatalf("Should not have returned error: %e", err)
+			t.Fatalf("Should not have returned error: %s", err.Error())
 		}
 
 		if out != os.Stdout {
@@ -53,7 +53,7 @@ func TestSetupGetOutput(t *testing.T) {
 		file, err := SetupGetOutput("valid", fakeFileOpener)
 
 		if err != nil {
-			t.Fatalf("Should not have returned error: %e", err)
+			t.Fatalf("Should not have returned error: %s", err.Error())
 		}
 
 		if file != expectedFile {
