@@ -13,18 +13,26 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var (
+	version string
+	cfgFile string
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "haste [file]",
 	Short: "A hastebin client, written in Go",
-	Long:  `A hastebin client that can create hastes from files and STDIN and read hastes from a configurable server.`,
+	Long:  fmt.Sprintf("haste v%s\nA hastebin client that can create hastes from files and STDIN and read hastes from a haste-server instance.", version),
 	Args:  cobra.MaximumNArgs(1),
 	Example: `echo Test | haste
 cat ./file | haste
 haste ./file`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if cmd.Flag("version") != nil {
+			fmt.Printf("v%s", version)
+			os.Exit(0)
+		}
+
 		server := server.MakeHasteServer()
 		viper.Unmarshal(&server)
 
@@ -69,6 +77,8 @@ func init() {
 	viper.BindPFlag("server", rootCmd.PersistentFlags().Lookup("server"))
 	viper.BindPFlag("clientCert", rootCmd.PersistentFlags().Lookup("client-cert"))
 	viper.BindPFlag("clientCertKey", rootCmd.PersistentFlags().Lookup("client-cert-key"))
+
+	rootCmd.Flags().BoolP("version", "v", false, "Print the version number")
 }
 
 // initConfig reads in config file and ENV variables if set.

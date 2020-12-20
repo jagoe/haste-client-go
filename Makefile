@@ -1,5 +1,14 @@
+version=1.0.0-beta.1
+commit=$(shell git rev-parse --short HEAD)
+built_at=$(shell date +%FT%T%z)
+built_by=Jakob Göbel
+
 build:
-	@go build -o bin/haste ./main.go
+	@go build -ldflags "-X 'github.com/jagoe/haste-client-go/cmd.version=${version}' \
+		-X 'github.com/jagoe/haste-client-go/cmd.commit=${commit}' \
+		-X 'github.com/jagoe/haste-client-go/cmd.builtBy=${built_by}' \
+		-X 'github.com/jagoe/haste-client-go/cmd.builtAt=${built_at}'" \
+	-o bin/haste ./main.go
 
 test:
 	@$(call test) | $(call color_test_output)
