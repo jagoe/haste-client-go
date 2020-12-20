@@ -20,8 +20,8 @@ type FakeGetter struct {
 	haste string
 }
 
-func (getter FakeGetter) Get(_ string, _ *http.Client) (string, error) {
-	return getter.haste, getter.err
+func (fake FakeGetter) Get(_ string, _ *http.Client) (string, error) {
+	return fake.haste, fake.err
 }
 
 type FakeCreator struct {
@@ -29,8 +29,8 @@ type FakeCreator struct {
 	hasteKey string
 }
 
-func (creator FakeCreator) Create(_ io.Reader, _ *http.Client) (string, error) {
-	return creator.hasteKey, creator.err
+func (fake FakeCreator) Create(_ io.Reader, _ *http.Client) (string, error) {
+	return fake.hasteKey, fake.err
 }
 
 // #endregion

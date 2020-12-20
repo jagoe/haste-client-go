@@ -11,12 +11,12 @@ type FakeFileOpener struct {
 	file *os.File
 }
 
-func (ffo FakeFileOpener) OpenFile(name string, flag int, perm os.FileMode) (*os.File, error) {
-	if ffo.err != nil {
-		return nil, ffo.err
+func (fake FakeFileOpener) OpenFile(name string, flag int, perm os.FileMode) (*os.File, error) {
+	if fake.err != nil {
+		return nil, fake.err
 	}
 
-	return ffo.file, nil
+	return fake.file, nil
 }
 
 func TestSetupGetOutput(t *testing.T) {
