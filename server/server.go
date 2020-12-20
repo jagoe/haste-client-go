@@ -83,7 +83,7 @@ func (server HasteServer) Create(content io.Reader, client *http.Client) (string
 
 	response, err := client.Post(fmt.Sprintf("%s/documents", server.URL), "text/plain", content)
 	if err != nil {
-		return "", fmt.Errorf("Error creating haste: %e", err)
+		return "", fmt.Errorf("Error creating haste: %s", err.Error())
 	}
 
 	if response.Body != nil {
@@ -94,7 +94,7 @@ func (server HasteServer) Create(content io.Reader, client *http.Client) (string
 	decoder := json.NewDecoder(response.Body)
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&haste); err != nil {
-		return "", fmt.Errorf("Error when creating the haste: %e", err)
+		return "", fmt.Errorf("Error when retrieving the haste key: %s", err.Error())
 	}
 
 	return haste.Key, nil

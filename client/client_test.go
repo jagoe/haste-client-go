@@ -6,15 +6,9 @@ import (
 	"io"
 	"net/http"
 	"testing"
-
-	"github.com/jagoe/haste-client-go/config"
 )
 
 // #region Setup
-var defaultConfig config.Config = config.Config{
-	Server: "hastebin.local",
-}
-
 type FakeGetter struct {
 	err   error
 	haste string
