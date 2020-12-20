@@ -7,18 +7,34 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/jagoe/haste-client-go/config"
 )
 
+// HasteGetter describes getting hastes from a haste-server instance
+type HasteGetter interface {
+	Get(key string, client *http.Client) (string, error)
+}
+
+// HasteCreator describes creating hastes on a haste-server instance
+type HasteCreator interface {
+	Create(content io.Reader, client *http.Client) (string, error)
+}
+
+// HasteServer provides functionality to interact with a haste-server instance
+type HasteServer struct {
+	URL                      string `mapstructure:"server"`
+	ClientCertificatePath    string `mapstructure:"clientCert"`
+	ClientCertificateKeyPath string `mapstructure:"clientCertKey"`
+}
+
 // Get reads a haste from the provided server
-func Get(key string, config *config.GetConfig) (string, error) {
-	client, err := prepareClientForTLS(&config.HasteConfig)
-	if err != nil {
-		return "", err
+func (server HasteServer) Get(key string, client *http.Client) (string, error) {
+	if server.ClientCertificatePath != "" && server.ClientCertificateKeyPath != "" {
+		if err := server.prepareClientForTLS(client); err != nil {
+			return "", err
+		}
 	}
 
-	response, err := client.Get(fmt.Sprintf("%s/raw/%s", config.HasteConfig.Server, key))
+	response, err := client.Get(fmt.Sprintf("%s/raw/%s", server.URL, key))
 	if err != nil {
 		return "", fmt.Errorf("Error retrieving haste: %e", err)
 	}
@@ -44,13 +60,14 @@ type createHasteResponse struct {
 }
 
 // Create a haste on the server
-func Create(content io.Reader, config *config.CreateConfig) (string, error) {
-	client, err := prepareClientForTLS(&config.HasteConfig)
-	if err != nil {
-		return "", err
+func (server HasteServer) Create(content io.Reader, client *http.Client) (string, error) {
+	if server.ClientCertificatePath != "" && server.ClientCertificateKeyPath != "" {
+		if err := server.prepareClientForTLS(client); err != nil {
+			return "", err
+		}
 	}
 
-	response, err := client.Post(fmt.Sprintf("%s/documents", config.HasteConfig.Server), "text/plain", content)
+	response, err := client.Post(fmt.Sprintf("%s/documents", server.URL), "text/plain", content)
 	if err != nil {
 		return "", fmt.Errorf("Error creating haste: %e", err)
 	}
@@ -69,16 +86,10 @@ func Create(content io.Reader, config *config.CreateConfig) (string, error) {
 	return haste.Key, nil
 }
 
-func prepareClientForTLS(config *config.HasteConfig) (*http.Client, error) {
-	client := &http.Client{}
-
-	if !config.CanProvideClientCertificate() {
-		return client, nil
-	}
-
-	cert, err := tls.LoadX509KeyPair(config.ClientCertificatePath, config.ClientCertificateKeyPath)
+func (server HasteServer) prepareClientForTLS(client *http.Client) error {
+	cert, err := tls.LoadX509KeyPair(server.ClientCertificatePath, server.ClientCertificateKeyPath)
 	if err != nil {
-		return nil, fmt.Errorf("Error reading client certificate: %e", err)
+		return fmt.Errorf("Error reading client certificate: %e", err)
 	}
 
 	client.Transport = &http.Transport{
@@ -87,5 +98,5 @@ func prepareClientForTLS(config *config.HasteConfig) (*http.Client, error) {
 		},
 	}
 
-	return client, nil
+	return nil
 }

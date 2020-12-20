@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/jagoe/haste-client-go/client"
-	"github.com/jagoe/haste-client-go/config"
+	"github.com/jagoe/haste-client-go/server"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
@@ -24,10 +26,23 @@ var rootCmd = &cobra.Command{
 cat ./file | haste
 haste ./file`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config := config.CreateConfig{}
-		viper.Unmarshal(&config)
+		server := server.HasteServer{}
+		viper.Unmarshal(&server)
 
-		client.Create(args[0], &config)
+		// TODO: extract to separate fn in client package
+		var input io.Reader
+		if args[0] != "" {
+			file, err := os.Open(args[0])
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			input = file
+		} else {
+			input = os.Stdin
+		}
+
+		client.Create(input, server, server.URL, os.Stdout)
 	},
 }
 
