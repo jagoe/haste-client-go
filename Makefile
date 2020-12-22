@@ -41,6 +41,6 @@ define jq-summary
 endef
 
 define jq-coverage
-	jq -r --slurp '.[] | select(.Action == "output") | select(.Output | test(".+coverage: \\d+\\.\\d+% of statements")) | .Output[:-1]' \
+	jq -r --slurp '.[] | select(.Action == "output") | select(.Output | test("(.+coverage: \\d+\\.\\d+% of statements)|(no test files)")) | .Output[:-1]' \
 	| sort -k2,2
 endef
