@@ -96,4 +96,4 @@ Jakob Göbel (goebel.jakob@gmail.com)
 
 ## License
 
-[MIT License](./LICENSE)
+[Apache License 2.0](./LICENSE)
