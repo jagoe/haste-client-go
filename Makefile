@@ -11,15 +11,15 @@ build:
 	-o bin/haste ./main.go
 
 test:
-	@$(call test) | $(call color_test_output)
+	@go test ./... \
+	| $(call color_test_output)
 
 coverage:
-	@$(call test) -cover -json | $(call jq-coverage) | $(call color_test_output)
-
-test-summary:
-	@$(call test) -json \
-	| $(call jq-summary) \
+	@go test ./... -cover \
 	| $(call color_test_output)
+
+test-details:
+	@$(call test) | $(call color_test_output)
 
 ### HELPERS ###
 
@@ -32,15 +32,6 @@ define color_test_output
 	| sed "/^ok/s//$(shell printf "\033[32mok\033[0m")/" \
 	| sed "/^FAIL/s//$(shell printf "\033[31mFAIL\033[0m")/" \
 	| sed "/^?/s//$(shell printf "\033[33m?\033[0m")/" \
+	| sed "/^vok/s//$(shell printf "\033[33mvok\033[0m")/" \
 	| sed "/.*\.go:[[:digit:]]*:.*/s//$(shell printf "\033[31m&\033[0m")/"
-endef
-
-define jq-summary
-	jq -r --slurp '.[] | select(.Action == "output") | select(.Output | test("^(ok|\\?|FAIL)\\s*\\t")) | .Output[:-1]' \
-	| sort -k2,2
-endef
-
-define jq-coverage
-	jq -r --slurp '.[] | select(.Action == "output") | select(.Output | test("(.+coverage: \\d+\\.\\d+% of statements)|(no test files)")) | .Output[:-1]' \
-	| sort -k2,2
 endef

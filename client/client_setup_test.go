@@ -29,7 +29,7 @@ func (fake FakeFileOpener) Open(name string) (*os.File, error) {
 
 func TestSetupGetOutput(t *testing.T) {
 	t.Run("should return STDOUT if filepath is empty", func(t *testing.T) {
-		out, err := SetupGetOutput("", nil)
+		out, err := SetupGetOutput("", nil, os.Stdout)
 
 		if err != nil {
 			t.Fatalf("Should not have returned error: %s", err.Error())
@@ -44,7 +44,7 @@ func TestSetupGetOutput(t *testing.T) {
 		fileError := "Expected error"
 		expectedError := fmt.Sprintf("Error creating output file: %s", fileError)
 		fakeFileOpener := FakeFileOpener{err: fmt.Errorf(fileError)}
-		_, err := SetupGetOutput("invalid", fakeFileOpener)
+		_, err := SetupGetOutput("invalid", fakeFileOpener, nil)
 
 		if err == nil {
 			t.Fatalf("Should have returned error")
@@ -58,7 +58,7 @@ func TestSetupGetOutput(t *testing.T) {
 	t.Run("should return file if filepath is valid", func(t *testing.T) {
 		expectedFile := &os.File{}
 		fakeFileOpener := FakeFileOpener{file: expectedFile}
-		file, err := SetupGetOutput("valid", fakeFileOpener)
+		file, err := SetupGetOutput("valid", fakeFileOpener, nil)
 
 		if err != nil {
 			t.Fatalf("Should not have returned error: %s", err.Error())
@@ -72,7 +72,7 @@ func TestSetupGetOutput(t *testing.T) {
 
 func TestSetupCreateInput(t *testing.T) {
 	t.Run("should return STDIN if filepath is empty", func(t *testing.T) {
-		out, err := SetupCreateInput("", nil)
+		out, err := SetupCreateInput("", nil, os.Stdin)
 
 		if err != nil {
 			t.Fatalf("Should not have returned error: %s", err.Error())
@@ -87,7 +87,7 @@ func TestSetupCreateInput(t *testing.T) {
 		fileError := "Expected error"
 		expectedError := fmt.Sprintf("Error reading input file: %s", fileError)
 		fakeFileOpener := FakeFileOpener{err: fmt.Errorf(fileError)}
-		_, err := SetupCreateInput("invalid", fakeFileOpener)
+		_, err := SetupCreateInput("invalid", fakeFileOpener, nil)
 
 		if err == nil {
 			t.Fatalf("Should have returned error")
@@ -101,7 +101,7 @@ func TestSetupCreateInput(t *testing.T) {
 	t.Run("should return file if filepath is valid", func(t *testing.T) {
 		expectedFile := &os.File{}
 		fakeFileOpener := FakeFileOpener{file: expectedFile}
-		file, err := SetupCreateInput("valid", fakeFileOpener)
+		file, err := SetupCreateInput("valid", fakeFileOpener, nil)
 
 		if err != nil {
 			t.Fatalf("Should not have returned error: %s", err.Error())

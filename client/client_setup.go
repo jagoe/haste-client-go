@@ -26,9 +26,9 @@ func (OsFileOpener) Open(name string) (*os.File, error) {
 }
 
 // SetupGetOutput prepares the output stream for client.Get based on a filepath that the user did or did not provide
-func SetupGetOutput(filepath string, fileOpener FileOpener) (io.Writer, error) {
+func SetupGetOutput(filepath string, fileOpener FileOpener, stdout io.Writer) (io.Writer, error) {
 	if filepath == "" {
-		return os.Stdout, nil
+		return stdout, nil
 	}
 
 	file, err := fileOpener.OpenFile(filepath, os.O_CREATE, os.ModePerm)
@@ -41,9 +41,9 @@ func SetupGetOutput(filepath string, fileOpener FileOpener) (io.Writer, error) {
 }
 
 // SetupCreateInput determines where client.Create gets its input from
-func SetupCreateInput(filepath string, fileOpener FileOpener) (io.Reader, error) {
+func SetupCreateInput(filepath string, fileOpener FileOpener, stdin io.Reader) (io.Reader, error) {
 	if filepath == "" {
-		return os.Stdin, nil
+		return stdin, nil
 	}
 
 	file, err := fileOpener.Open(filepath)
