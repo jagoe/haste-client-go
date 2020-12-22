@@ -9,6 +9,7 @@ import (
 // FileOpener is an interface that describes opening a file
 type FileOpener interface {
 	OpenFile(name string, flag int, perm os.FileMode) (*os.File, error)
+	Open(name string) (*os.File, error)
 }
 
 // OsFileOpener wraps os.OpenFile
@@ -17,6 +18,11 @@ type OsFileOpener struct{}
 // OpenFile wraps os.OpenFile
 func (OsFileOpener) OpenFile(name string, flag int, perm os.FileMode) (*os.File, error) {
 	return os.OpenFile(name, flag, perm)
+}
+
+// Open wraps os.Open
+func (OsFileOpener) Open(name string) (*os.File, error) {
+	return os.Open(name)
 }
 
 // SetupGetOutput prepares the output stream for client.Get based on a filepath that the user did or did not provide
@@ -32,4 +38,18 @@ func SetupGetOutput(filepath string, fileOpener FileOpener) (io.Writer, error) {
 
 	return file, nil
 
+}
+
+// SetupCreateInput determines where client.Create gets its input from
+func SetupCreateInput(filepath string, fileOpener FileOpener) (io.Reader, error) {
+	if filepath == "" {
+		return os.Stdin, nil
+	}
+
+	file, err := fileOpener.Open(filepath)
+	if err != nil {
+		return nil, fmt.Errorf("Error reading input file: %s", err.Error())
+	}
+
+	return file, nil
 }

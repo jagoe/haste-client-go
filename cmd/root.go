@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -36,21 +35,13 @@ haste ./file`,
 		server := server.MakeHasteServer()
 		viper.Unmarshal(&server)
 
-		// TODO: extract to separate fn in client package
-		var input io.Reader
-		if args[0] != "" {
-			file, err := os.Open(args[0])
-			if err != nil {
-				os.Stderr.WriteString(err.Error())
-				os.Exit(1)
-			}
-
-			input = file
-		} else {
-			input = os.Stdin
+		input, err := client.SetupCreateInput(args[0], client.OsFileOpener{})
+		if err != nil {
+			os.Stderr.WriteString(err.Error())
+			os.Exit(1)
 		}
 
-		err := client.Create(input, server, server.URL, os.Stdout)
+		err = client.Create(input, server, server.URL, os.Stdout)
 		if err != nil {
 			os.Stderr.WriteString(err.Error())
 			os.Exit(1)
