@@ -1,4 +1,4 @@
-version=1.0.0-beta.1
+version=1.0.0
 commit=$(shell git rev-parse --short HEAD)
 built_at=$(shell date +%FT%T%z)
 built_by=Jakob Göbel

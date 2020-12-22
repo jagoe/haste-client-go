@@ -26,8 +26,8 @@ func NewRootCommand() *cobra.Command {
 		Long:  fmt.Sprintf("haste v%s\nA hastebin client that can create hastes from files and STDIN and read hastes from a haste-server instance.", version),
 		Args:  cobra.MaximumNArgs(1),
 		Example: `echo Test | haste
-	cat ./file | haste
-	haste ./file`,
+cat ./file | haste
+haste ./file`,
 		Run: func(cmd *cobra.Command, args []string) {
 			displayVersion := false
 			versionFlag := cmd.Flag("version")
@@ -88,9 +88,9 @@ func initRootCommand(rootCmd *cobra.Command) {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "Config file [$HOME/.haste-client-go.yaml]")
-	rootCmd.PersistentFlags().StringP("server", "s", "https://hastebin.com", "Server URL")
-	rootCmd.PersistentFlags().String("client-cert", "", "Client certificate path")
-	rootCmd.PersistentFlags().String("client-cert-key", "", "Client certificate key path")
+	rootCmd.PersistentFlags().StringP("server", "s", "(global) https://hastebin.com", "Server URL")
+	rootCmd.PersistentFlags().String("client-cert", "", "(global) Client certificate path")
+	rootCmd.PersistentFlags().String("client-cert-key", "", "(global) Client certificate key path")
 	viper.BindPFlag("server", rootCmd.PersistentFlags().Lookup("server"))
 	viper.BindPFlag("clientCert", rootCmd.PersistentFlags().Lookup("client-cert"))
 	viper.BindPFlag("clientCertKey", rootCmd.PersistentFlags().Lookup("client-cert-key"))

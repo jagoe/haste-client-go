@@ -12,6 +12,7 @@ It also supports client certificates for mTLS for some reason.
     * [Creating a haste](#creating-a-haste)
     * [Reading a haste](#reading-a-haste)
     * [Help](#help)
+    * [Config](#config)
   * [Build](#build)
   * [Author](#author)
   * [License](#license)
@@ -51,7 +52,8 @@ haste get <key> -o ./file # prints the haste contents to ./file
 For more detailed information on how `haste` can be used, use `haste --help` or look here:
 
 ```plaintext
-A hastebin client that can create hastes from files and STDIN and read hastes from a configurable server.
+haste v1.0.0
+A hastebin client that can create hastes from files and STDIN and read hastes from a haste-server instance.
 
 Usage:
   haste [file] [flags]
@@ -72,8 +74,19 @@ Flags:
   -c, --config string            Config file [$HOME/.haste-client-go.yaml]
   -h, --help                     help for haste
   -s, --server string            Server URL (default "https://hastebin.com")
+  -v, --version                  Print the version number
 
 Use "haste [command] --help" for more information about a command.
+```
+
+### Config
+
+The global flags can also be configured by creating `$HOME/.haste-client-go.yaml` or referencing a configuration file using the `-c/--config` flag.
+
+```yaml
+server: <url>
+clientCert: <file location> # expects a certificate file in PEM format
+clientCertKey: <file location> # expects a certificate key file in PEM format
 ```
 
 ## Build
